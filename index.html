@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manga</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+          integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            height: 100vh;
+        }
+        .container {
+            height: 100%;
+            background: url("./images/image.jpg");
+            background-size: cover;
+            position: relative;
+        }
+        .box {
+            text-align: center;
+            border: 1px #ccc solid;
+            border-radius: 20%;
+            background-color: white;
+            background-size: cover;
+            padding: 10px;
+        }
+        .box1 {
+            position: absolute;
+            top: 100px;
+        }
+        .box2 {
+            position: absolute;
+            top: 100px;
+            left: 500px;
+        }
+        input {
+            border: none;
+            border-radius: 20%;
+            background: transparent;
+            text-align: center;
+        }
+        i {
+            cursor: pointer;
+        }
+        .slider {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 20px;
+            background: red;
+        }
+        .slider input {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box box1">
+            <input type="text" value="Hello">
+            <i class="fa fa-volume-up d-none" data-audio="audio1"></i>
+            <i class="fa fa-volume-off d-block" data-audio="audio1"></i>
+            <audio src="./audio/audio1.mp3" id="audio1"></audio>
+        </div>
+        <div class="box box2">
+            <input type="text" value="Hi">
+            <i class="fa fa-volume-up d-none" data-audio="audio2"></i>
+            <i class="fa fa-volume-off d-block" data-audio="audio2"></i>
+            <audio src="./audio/audio2.mp3" id="audio2"></audio>
+        </div>
+    </div>
+    <div class="slider">
+        <input type="range" min="0" value="0" step="0.01">
+    </div>
+    <div>
+        <button>Click</button>
+    </div>
+    <script>
+        $(document).ready(function () {
+            var total_duration = 0;
+            var audio = $("audio");
+
+            var all_audio = document.getElementById("audio1");
+            $('#audio1').bind('canplay', function() {
+                this.currentTime = 10;
+                this.play();
+            });
+            audio.each(function (index, item) {
+                item.onloadedmetadata = function() {
+                    total_duration += item.duration;
+                    $("input[type='range']").attr('max', total_duration);
+                }
+                item.ontimeupdate = function() {
+                    // var time = 0;
+                    // audio.each( function (key, value) {
+                    //     if(key >= index) {
+                    //         return;
+                    //     }
+                    //     time += value.duration;
+                    // })
+                    // // console.log(time);
+                    // $("input[type='range']").val(item.currentTime + time);
+                }
+            });
+            $("button").on('click', function () {
+                all_audio.currentTime = 100;
+                all_audio.play();
+            })
+            $("input[type='range']").on('change', function () {
+                var all_audio = $("#audio1")[0];
+                var current_time = $(this).val();
+                all_audio.currentTime = current_time;
+                console.log(current_time);
+                console.log(all_audio.currentTime);
+                all_audio.play();
+                // all_audio.each(function (index, item) {
+                //     // item.pause();
+                //     var duration = 0;
+                //     all_audio.each(function (key, value) {
+                //         if(key < index) {
+                //             duration += value.duration;
+                //         }
+                //     })
+                //
+                //     if(duration < current_time && item.duration + duration > current_time){
+                //         console.log(duration);
+                //         console.log(current_time);
+                //         item.currentTime = 100;
+                //         item.play();
+                //         console.log(item.currentTime);
+                //     }
+                // })
+
+            })
+            $(".fa-volume-off").on('click', function() {
+                $(".fa-volume-up").removeClass('d-block');
+                $(".fa-volume-up").addClass('d-none');
+                $(".fa-volume-off").removeClass('d-none');
+                $(".fa-volume-off").addClass('d-block');
+                var all_audio = $("audio");
+                all_audio.each(function (index, item) {
+                    item.pause();
+                    item.currentTime = 0;
+                })
+                var audio_target = $(this).attr("data-audio");
+                $("i[data-audio='" + audio_target + "']").addClass('d-block');
+                $("i[data-audio='" + audio_target + "']").removeClass('d-none');
+                $(this).removeClass('d-block');
+                $(this).addClass('d-none');
+                var audio = document.getElementById(audio_target);
+                audio.play();
+            })
+            $(".fa-volume-up").on('click', function() {
+                var audio_target = $(this).attr("data-audio");
+                $("i[data-audio='" + audio_target + "']").addClass('d-block');
+                $("i[data-audio='" + audio_target + "']").removeClass('d-none');
+                $(this).removeClass('d-block');
+                $(this).addClass('d-none');
+                var audio = document.getElementById(audio_target);
+                audio.pause();
+            })
+
+        })
+    </script>
+</body>
+</html>
