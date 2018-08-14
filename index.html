@@ -77,64 +77,56 @@
     <div class="slider">
         <input type="range" min="0" value="0" step="0.01">
     </div>
-    <div>
-        <button>Click</button>
-    </div>
     <script>
         $(document).ready(function () {
             var total_duration = 0;
             var audio = $("audio");
 
-            var all_audio = document.getElementById("audio1");
-            $('#audio1').bind('canplay', function() {
-                this.currentTime = 10;
-                this.play();
-            });
+
             audio.each(function (index, item) {
                 item.onloadedmetadata = function() {
                     total_duration += item.duration;
                     $("input[type='range']").attr('max', total_duration);
                 }
                 item.ontimeupdate = function() {
-                    // var time = 0;
-                    // audio.each( function (key, value) {
-                    //     if(key >= index) {
-                    //         return;
-                    //     }
-                    //     time += value.duration;
-                    // })
-                    // // console.log(time);
-                    // $("input[type='range']").val(item.currentTime + time);
+                    var time = 0;
+                    audio.each( function (key, value) {
+                        if(key >= index) {
+                            return;
+                        }
+                        time += value.duration;
+                    })
+                    // console.log(time);
+                    $("input[type='range']").val(item.currentTime + time);
                 }
+                item.addEventListener('ended', function () {
+                    if(index < audio.length)
+                        audio[index + 1].play();
+                        $("i").parent().css('background', 'white');
+                        $("i[data-audio=" + audio[index + 1].id + "]").parent().css('background', 'red');
+                })
             });
-            $("button").on('click', function () {
-                all_audio.currentTime = 100;
-                all_audio.play();
-            })
             $("input[type='range']").on('change', function () {
-                var all_audio = $("#audio1")[0];
                 var current_time = $(this).val();
-                all_audio.currentTime = current_time;
-                console.log(current_time);
-                console.log(all_audio.currentTime);
-                all_audio.play();
-                // all_audio.each(function (index, item) {
-                //     // item.pause();
-                //     var duration = 0;
-                //     all_audio.each(function (key, value) {
-                //         if(key < index) {
-                //             duration += value.duration;
-                //         }
-                //     })
-                //
-                //     if(duration < current_time && item.duration + duration > current_time){
-                //         console.log(duration);
-                //         console.log(current_time);
-                //         item.currentTime = 100;
-                //         item.play();
-                //         console.log(item.currentTime);
-                //     }
-                // })
+                audio.each(function (index, item) {
+                    // item.pause();
+                    var duration = 0;
+                    audio.each(function (key, value) {
+                        if(key < index) {
+                            duration += value.duration;
+                        }
+                    })
+                    item.pause();
+                    item.currentTime = 0;
+                    if(duration < current_time && item.duration + duration > current_time){
+                        item.currentTime = current_time - duration;
+                        console.log(item.id);
+                        $("i").parent().css('background', 'white');
+                        $("i[data-audio=" + item.id + "]").parent().css('background', 'red');
+                        console.log($("i[data-audio=" + item.id + "]"));
+                        item.play();
+                    }
+                })
 
             })
             $(".fa-volume-off").on('click', function() {
