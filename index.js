@@ -13,6 +13,7 @@ $(document).ready(function () {
         $("i[data-audio=" + id + "]").parent().css('background', 'red');
     }
     function hideButton(name) {
+        console.log(name);
         $(name).removeClass('d-block');
         $(name).addClass('d-none');
     }
@@ -28,9 +29,25 @@ $(document).ready(function () {
         $("#" + id)[0].play();
     }
 
-
+    $("audio").on('play', function () {
+        console.log(1);
+        hideButton(".fa-volume-up");
+        console.log(2);
+        showButton(".fa-volume-off");
+        console.log(3);
+        hideButton($(this).parent().children('.fa-volume-off')[0]);
+        console.log(4);
+        showButton($(this).parent().children('.fa-volume-up')[0]);
+        console.log(5);
+        var audio_target = $(this).parent().children('i').attr("data-audio");
+        activeBox(audio_target);
+    })
+    $('audio').on('pause', function () {
+        hideButton(".fa-volume-up");
+        showButton(".fa-volume-off");
+    })
     audio.each(function (index, item) {
-        item.onloadedmetadata = function() {
+            item.onloadedmetadata = function() {
             total_duration += item.duration;
             slider.attr('max', total_duration);
         }
@@ -69,21 +86,17 @@ $(document).ready(function () {
         })
     })
     $(".fa-volume-off").on('click', function() {
-        hideButton(".fa-volume-up");
-        showButton(".fa-volume-off");
+        var _this = $(this).parent().children('audio')[0];
         audio.each(function (index, item) {
-            stopAudio(item);
+            if (item !== _this) {
+                stopAudio(item);
+            }
         })
         var audio_target = $(this).attr("data-audio");
-        activeBox(audio_target);
-        showButton("i[data-audio='" + audio_target + "']");
-        hideButton(this);
         playAudioById(audio_target);
     })
     $(".fa-volume-up").on('click', function() {
         var audio_target = $(this).attr("data-audio");
-        showButton("i[data-audio='" + audio_target + "']");
-        hideButton(this);
         var audio = $("#" + audio_target)[0];
         audio.pause();
     })
