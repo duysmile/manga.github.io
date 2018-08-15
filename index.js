@@ -45,9 +45,9 @@ $(document).ready(function () {
     }
     var dataAudio = [];
 
-    function playAudioWithTime(time, item) {
+    async function playAudioWithTime(time, item) {
         item.currentTime = time;
-        item.play();
+        await item.play();
     }
     function activeBox(id) {
         $("i").parent().css('background', 'white');
@@ -62,11 +62,13 @@ $(document).ready(function () {
         $(name).addClass('d-block');
     }
     function stopAudio(item) {
-        item.pause();
-        item.currentTime = 0;
+        if(!item.paused) {
+            item.pause();
+            item.currentTime = 0;
+        }
     }
-    function playAudioById(id) {
-        $("#" + id)[0].play();
+    async function playAudioById(id) {
+        await $("#" + id)[0].play();
     }
     function changeSliderWithAudioTime(item, index) {
         var time = 0;
@@ -78,11 +80,6 @@ $(document).ready(function () {
         slider.val(item.currentTime + time);
     }
 
-
-    $(document).on('pause', 'audio', function () {
-        hideButton(".fa-volume-up");
-        showButton(".fa-volume-off");
-    })
     audio.each(function (index, item) {
         item.onloadedmetadata = function() {
             total_duration += item.duration;
@@ -99,7 +96,11 @@ $(document).ready(function () {
                 activeBox(audio[index + 1].id);
             }
         })
-        item.addEventListener('play', function () {
+        item.addEventListener('pause', function() {
+            hideButton(".fa-volume-up");
+            showButton(".fa-volume-off");
+        })
+        item.addEventListener('playing', function() {
             hideButton(".fa-volume-up");
             showButton(".fa-volume-off");
             hideButton($(this).parent().children('.fa-volume-off')[0]);
@@ -108,7 +109,7 @@ $(document).ready(function () {
             activeBox(audio_target);
         })
     });
-    slider.on('change', function () {
+    slider.on('input', function () {
         var current_time = $(this).val();
         audio.each(function (index, item) {
             var duration = 0;
@@ -130,7 +131,7 @@ $(document).ready(function () {
             if (item !== _this) {
                 stopAudio(item);
             }
-        })
+        });
         var audio_target = $(this).attr("data-audio");
         playAudioById(audio_target);
     })
@@ -139,5 +140,4 @@ $(document).ready(function () {
         var audio = $("#" + audio_target)[0];
         audio.pause();
     })
-
 })
