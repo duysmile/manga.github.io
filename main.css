@@ -3,7 +3,7 @@ body {
 }
 .container {
     height: 100%;
-    background: url("./images/image.jpg");
+    /*background: url("./images/image.jpg");*/
     background-size: cover;
     position: relative;
 }
@@ -14,15 +14,18 @@ body {
     background-color: white;
     background-size: cover;
     padding: 10px;
+    position: absolute;
 }
 .box1 {
-    position: absolute;
     top: 100px;
 }
 .box2 {
-    position: absolute;
     top: 100px;
     left: 500px;
+}
+.box3 {
+    top: 100px;
+    left: 900px;
 }
 input {
     border: none;
@@ -34,12 +37,26 @@ i {
     cursor: pointer;
 }
 .slider {
-    position: fixed;
+    position: absolute;
     bottom: 0;
+    left: 0;
     width: 100%;
     height: 20px;
     background: red;
 }
 .slider input {
     width: 100%;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1000;
+}
+.background-image img {
+    width: 100%;
+    height: 100%;
 }

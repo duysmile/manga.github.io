@@ -1,0 +1,29 @@
+[
+  {
+    "text": "hello",
+    "audio": "./audio/audio1.mp3",
+    "position": {
+        "top": "100px",
+        "left": "0"
+    },
+    "name": "box1"
+  },
+  {
+    "text": "hi",
+    "audio": "./audio/audio2.mp3",
+    "position": {
+      "top": "100px",
+      "left": "500px"
+    },
+    "name": "box2"
+  },
+  {
+    "text": "bye",
+    "audio": "./audio/audio3.mp3",
+    "position": {
+      "top": "100px",
+      "left": "900px"
+    },
+    "name": "box3"
+  }
+]
